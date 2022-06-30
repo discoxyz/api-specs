@@ -1,0 +1,280 @@
+openapi: 3.0.1
+servers:
+  - url: //api.disco.xyz/v1/docs
+x-logo: 
+  - url: https://uploads-ssl.webflow.com/62570f1bda35da4913f71ba7/628537d32189092b75f59b4d_disco-ball%402x-p-500.png
+info:
+  version: v1
+  title: Disco API
+  contact:
+    name: Disco Team
+    email: ask@disco.xyz
+  description: | 
+    This is a sample server Petstore server.
+    You can find out more about Swagger at
+    [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).
+    For this sample, you can use the api key `special-key` to test the authorization filters.
+    # Introduction
+    This API is documented in **OpenAPI format** and is based on
+    [Petstore sample](http://petstore.swagger.io/) provided by [swagger.io](http://swagger.io) team.
+    It was **extended** to illustrate features of [generator-openapi-repo](https://github.com/Rebilly/generator-openapi-repo)
+    tool and [ReDoc](https://github.com/Redocly/redoc) documentation. In addition to standard
+    OpenAPI syntax we use a few [vendor extensions](https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md).
+    # OpenAPI Specification
+    This API is documented in **OpenAPI format** and is based on
+    [Petstore sample](http://petstore.swagger.io/) provided by [swagger.io](http://swagger.io) team.
+    It was **extended** to illustrate features of [generator-openapi-repo](https://github.com/Rebilly/generator-openapi-repo)
+    tool and [ReDoc](https://github.com/Redocly/redoc) documentation. In addition to standard
+    OpenAPI syntax we use a few [vendor extensions](https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md).
+    # Cross-Origin Resource Sharing
+    This API features Cross-Origin Resource Sharing (CORS) implemented in compliance with  [W3C spec](https://www.w3.org/TR/cors/).
+    And that allows cross-domain communication from the browser.
+    All responses have a wildcard same-origin which makes them completely public and accessible to everyone, including any code on any site.
+components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: Authorization
+  schemas:
+    Forbidden:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The error name
+          minLength: 1
+          example: FORBIDDEN
+          default: FORBIDDEN
+        message:
+          type: string
+          description: An error message
+          minLength: 1
+        status:
+          type: number
+          description: The status code of the exception
+          example: 403
+          default: 403
+        errors:
+          type: array
+          items:
+            "$ref": "#/components/schemas/GenericError"
+          description: A list of related errors
+        stack:
+          type: string
+          description: The stack trace (only in development mode)
+      required:
+      - name
+      - message
+      - status
+    GenericError:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The error name
+          minLength: 1
+        message:
+          type: string
+          description: An error message
+          minLength: 1
+      additionalProperties: true
+      required:
+      - name
+      - message
+    Unauthorized:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The error name
+          minLength: 1
+          example: UNAUTHORIZED
+          default: UNAUTHORIZED
+        message:
+          type: string
+          description: An error message
+          minLength: 1
+        status:
+          type: number
+          description: The status code of the exception
+          example: 401
+          default: 401
+        errors:
+          type: array
+          items:
+            "$ref": "#/components/schemas/GenericError"
+          description: A list of related errors
+        stack:
+          type: string
+          description: The stack trace (only in development mode)
+      required:
+      - name
+      - message
+      - status
+    NotFound:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The error name
+          minLength: 1
+          example: NOT_FOUND
+          default: NOT_FOUND
+        message:
+          type: string
+          description: An error message
+          minLength: 1
+        status:
+          type: number
+          description: The status code of the exception
+          example: 404
+          default: 404
+        errors:
+          type: array
+          items:
+            "$ref": "#/components/schemas/GenericError"
+          description: A list of related errors
+        stack:
+          type: string
+          description: The stack trace (only in development mode)
+      required:
+      - name
+      - message
+      - status
+    ProfileModel:
+      type: object
+      properties:
+        profile:
+          type: array
+          uniqueItems: true
+          items:
+            "$ref": "#/components/schemas/Profile"
+    Profile:
+      type: object
+      properties:
+        bio:
+          type: string
+          minLength: 3
+        name:
+          type: string
+          minLength: 3
+security:
+- apiKey: []
+paths:
+  "/v1/profile/{did}":
+    get:
+      operationId: profileEndpointsGetProfileByDid
+      responses:
+        '200':
+          description: "Request was successful!"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProfileModel"
+        '401':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Unauthorized"
+          description: Unauthorized. Request not authenticated, API token is missing,
+            invalid or expired.
+        '403':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Forbidden"
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/NotFound"
+          description: Endpoint Not found
+      summary: Gets a Profile via its 3ID
+      parameters:
+      - in: path
+        name: did
+        required: true
+        schema:
+          type: string
+      tags:
+      - Profile Endpoints
+  "/v1/profile/address/{address}":
+    get:
+      operationId: profileEndpointsGetProfileByAddress
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProfileModel"
+          description: Successful response!
+        '401':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Unauthorized"
+          description: Unauthorized. Request not authenticated, API token is missing,
+            invalid or expired.
+        '403':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Forbidden"
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/NotFound"
+          description: Endpoint Not found
+      summary: Gets a Profile via its linked Eth Address
+      parameters:
+      - in: path
+        name: address
+        required: true
+        schema:
+          type: string
+      tags:
+      - Profile Endpoints
+  "/v1/profile/byTwitter/{twitterHandle}":
+    get:
+      operationId: profileEndpointsGetProfileByTwitter
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProfileModel"
+          description: Successful response!
+        '401':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Unauthorized"
+          description: Unauthorized. Request not authenticated, API token is missing,
+            invalid or expired.
+        '403':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Forbidden"
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/NotFound"
+          description: Endpoint not found
+      summary: Gets a profile vis its linked twitter account
+      parameters:
+      - in: path
+        name: twitterHandle
+        required: true
+        schema:
+          type: string
+      tags:
+      - Profile Endpoints
+tags:
+- name: Profile Endpoints
